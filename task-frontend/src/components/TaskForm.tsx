@@ -5,8 +5,8 @@ import { addTask } from "../services/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const taskSchema = z.object({
-  title: z.string().min(1),
-  description: z.string().min(1),
+  title: z.string().min(1, "Le titre est requis"),
+  description: z.string().min(1, "La description est requise"),
 });
 
 type TaskFormInputs = z.infer<typeof taskSchema>;
@@ -30,10 +30,24 @@ export default function TaskForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} style={{ marginBottom: 20 }}>
-      <input placeholder="Titre" {...register("title")} />
-      <input placeholder="Description" {...register("description")} />
-      <button type="submit">Ajouter</button>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mb-6">
+      <input
+        className="w-full border border-gray-300 rounded p-2"
+        placeholder="Titre"
+        {...register("title")}
+      />
+      <input
+        className="w-full border border-gray-300 rounded p-2"
+        placeholder="Description"
+        {...register("description")}
+      />
+      <button
+        type="submit"
+        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+      >
+        Ajouter la tâche
+      </button>
     </form>
   );
 }
+
