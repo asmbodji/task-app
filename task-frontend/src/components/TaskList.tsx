@@ -1,8 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getTasks, deleteTask } from "../services/api";
+import { getTasks, deleteTask, toggleTaskStatus } from "../services/api";
 
 type Task = {
-  id: number;
+  id: string;
   title: string;
   description: string;
   status: "pending" | "done";
@@ -17,6 +17,11 @@ export default function TaskList() {
 
   const deleteMutation = useMutation({
     mutationFn: deleteTask,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["tasks"] }),
+  });
+
+  const toggleMutation = useMutation({
+    mutationFn: toggleTaskStatus,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["tasks"] }),
   });
 
@@ -42,12 +47,22 @@ export default function TaskList() {
               {task.status}
             </span>
           </div>
-          <button
-            onClick={() => deleteMutation.mutate(task.id)}
-            className="text-red-500 hover:text-red-700 font-bold"
-          >
-            Supprimer
-          </button>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => toggleMutation.mutate(task.id)}
+              className="text-green-600 hover:text-green-800 font-bold"
+              title="Basculer statut"
+            >
+              ✓
+            </button>
+            <button
+              onClick={() => deleteMutation.mutate(task.id)}
+              className="text-red-500 hover:text-red-700 font-bold"
+              title="Supprimer"
+            >
+              🗑️
+            </button>
+          </div>
         </li>
       ))}
     </ul>
